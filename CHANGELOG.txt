@@ -1,0 +1,14 @@
+FABRIC VERSION 1.1.1
+- Fixed bug where the entity inside the Spawner would go back to previous entity after one spawn, if it was changed when the Spawner was off.
+- Better support for modded entities which have spawns eggs. Can also be configured in spawnermod.json config!
+
+FABRIC VERSION 1.1.0
+- Changed Spawner Key to have limited number of uses.
+- Added mod icon.png
+- Improved config handler
+- Added config values for controlling which mobs can drop eggs
+- Added option to turn on limited spawners. Control number of entities a spawner can spawn before it dies.
+
+
+FABRIC VERSION 1.0.0
+- Ported to Fabric

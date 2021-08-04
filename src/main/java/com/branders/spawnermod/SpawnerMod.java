@@ -62,7 +62,7 @@ public class SpawnerMod implements ModInitializer {
 		
 		SpawnerModNetworking.registerServerMessages();
 
-		Registry.register(Registry.ITEM, 243, "spawner", new BlockItem(Blocks.SPAWNER, new Item.Settings().group(ItemGroup.DECORATIONS).rarity(Rarity.EPIC)));
+		Registry.register(Registry.ITEM, 178, "spawner", new BlockItem(Blocks.SPAWNER, new Item.Settings().group(ItemGroup.DECORATIONS).rarity(Rarity.EPIC)));
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "spawner_key"), SPAWNER_KEY);
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "iron_golem_spawn_egg"), IRON_GOLEM_SPAWN_EGG);
 	}

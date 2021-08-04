@@ -5,7 +5,6 @@ import com.branders.spawnermod.config.ConfigValues;
 import com.branders.spawnermod.item.SpawnerKey;
 import com.google.common.collect.Iterables;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -18,15 +17,14 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;
@@ -52,7 +50,7 @@ public class EventHandler {
 		if(world.getBlockState(pos).getBlock() == Blocks.SPAWNER ) {
 			
 			ItemStack item = Iterables.get(player.getItemsHand(), 0);
-			NbtList enchants = item.getEnchantments();
+			ListTag enchants = item.getEnchantments();
 			
 			if(checkSilkTouch(enchants) && ConfigValues.get("disable_silk_touch") == 0) {
 				
@@ -74,7 +72,9 @@ public class EventHandler {
 				if(player.isCreative())
 					return true;
 				int size = 15 + world.random.nextInt(15) + world.random.nextInt(15);
-				ExperienceOrbEntity.spawn((ServerWorld) world, Vec3d.ofCenter(pos), size);
+				// ExperienceOrbEntity.spawn((ServerWorld) world, Vec3d.ofCenter(pos), size);
+				ExperienceOrbEntity exp = new ExperienceOrbEntity((ServerWorld) world, pos.getX(), pos.getY(), pos.getZ(), size);
+				world.spawnEntity(exp);
 			}
 		}
 		
@@ -124,8 +124,8 @@ public class EventHandler {
     	
     	// Get entity ResourceLocation string from spawner by creating a empty compound which we make our 
     	// spawner logic write to. We can then access what type of entity id the spawner has inside
-    	NbtCompound nbt = new NbtCompound();
-    	nbt = logic.writeNbt(world, pos, nbt);
+    	CompoundTag nbt = new CompoundTag();
+    	nbt = logic.toTag(nbt);
     	String entity_string = nbt.get("SpawnData").toString();
     	
     	// Strips the string
@@ -180,9 +180,9 @@ public class EventHandler {
 		BlockState blockstate = world.getBlockState(spawnerPos);
 		MobSpawnerBlockEntity spawner = (MobSpawnerBlockEntity)world.getBlockEntity(spawnerPos);
     	MobSpawnerLogic logic = spawner.getLogic();
-		NbtCompound nbt = new NbtCompound();
-    	
-		nbt = logic.writeNbt(world, spawnerPos, nbt);
+    	CompoundTag nbt = new CompoundTag();
+		
+		nbt = logic.toTag(nbt);
 		
 		if(world.isReceivingRedstonePower(spawnerPos)) {
 			short value = nbt.getShort("RequiredPlayerRange");
@@ -215,9 +215,9 @@ public class EventHandler {
 		}
 		
 		// Update block
-		logic.readNbt(world, spawnerPos, nbt);
+		logic.fromTag(nbt);
     	spawner.markDirty();
-    	world.updateListeners(spawnerPos, blockstate, blockstate, Block.NOTIFY_ALL);
+    	world.updateListeners(spawnerPos, blockstate, blockstate, 3);
 	}
 	
 	/**
@@ -228,7 +228,7 @@ public class EventHandler {
      * 		true if tool has Silk Touch
      * 		false otherwise
      */
-    private boolean checkSilkTouch(NbtList  list) {
+    private boolean checkSilkTouch(ListTag  list) {
     	if(list.asString().contains("silk_touch"))
     		return true;
     	else

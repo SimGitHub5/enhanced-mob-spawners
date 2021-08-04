@@ -5,7 +5,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
@@ -48,7 +47,7 @@ public class PlayerPlaceBlockMixin {
 			// Replace the entity inside the spawner with default entity
 			logic.setEntityId(EntityType.AREA_EFFECT_CLOUD);
 			spawner.markDirty();
-			world.updateListeners(pos, state, state, Block.NOTIFY_ALL);
+			world.updateListeners(pos, state, state, 3);
 		}
 		
 		return true;

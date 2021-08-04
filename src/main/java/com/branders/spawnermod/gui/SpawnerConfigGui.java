@@ -7,12 +7,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -37,7 +35,7 @@ public class SpawnerConfigGui extends Screen {
 	// Reference to spawner logic and NBT data. Set in constructor
 	private MobSpawnerLogic logic;
 	private BlockPos pos;
-	private NbtCompound nbt = new NbtCompound();
+	private CompoundTag nbt = new CompoundTag();
 	
 	// GUI textures
 	private Identifier spawnerConfigTexture = new Identifier(SpawnerMod.MOD_ID, "textures/gui/spawner_config_screen.png");
@@ -114,7 +112,7 @@ public class SpawnerConfigGui extends Screen {
     	// Read values for Spawner to check what type of configuration it has so we can render
     	// correct button display strings. We have to read all the values in case the player
     	// doesn't change anything and presses save button.
-		nbt = this.logic.writeNbt(MinecraftClient.getInstance().world, pos, nbt);
+		nbt = this.logic.toTag(nbt);
     	delay = nbt.getShort("Delay");
     	minSpawnDelay = nbt.getShort("MinSpawnDelay");
     	maxSpawnDelay = nbt.getShort("MaxSpawnDelay");
@@ -162,7 +160,7 @@ public class SpawnerConfigGui extends Screen {
 		/**
 		 * 	Count button
 		 */
-		addDrawableChild(countButton = new ButtonWidget(
+		addButton(countButton = new ButtonWidget(
 				width / 2 - 48, 55, 108, 20, new TranslatableText(
 						"button.count." + getButtonText(countOptionValue)), button -> {
 			switch(countOptionValue) {
@@ -202,7 +200,7 @@ public class SpawnerConfigGui extends Screen {
 		/**
 		 * 	Speed button
 		 */
-		addDrawableChild(speedButton = new ButtonWidget(
+		addButton(speedButton = new ButtonWidget(
 				width / 2 - 48, 80, 108, 20, new TranslatableText(
 						"button.speed." + getButtonText(speedOptionValue)), button -> {
 			switch(speedOptionValue) {
@@ -244,7 +242,7 @@ public class SpawnerConfigGui extends Screen {
 		/**
 		 * 	Range button
 		 */
-		addDrawableChild(rangeButton = new ButtonWidget(
+		addButton(rangeButton = new ButtonWidget(
 				width / 2 - 48, 105, 108, 20, new TranslatableText(
 						"button.range." + getButtonText(rangeOptionValue)), button -> {
 			switch(rangeOptionValue) {
@@ -279,7 +277,7 @@ public class SpawnerConfigGui extends Screen {
 		/**
 		 * 	Disable button
 		 */
-		addDrawableChild(disableButton = new ButtonWidget(
+		addButton(disableButton = new ButtonWidget(
 				width / 2 - 48, 130, 108, 20, new TranslatableText(
 						"button.toggle." + getButtonText(disabled)), button -> {
 			if(disabled) {
@@ -314,7 +312,7 @@ public class SpawnerConfigGui extends Screen {
 		/**
 		 * 	Save button - configures spawner data
 		 */
-		addDrawableChild(new ButtonWidget(width / 2 - 89, 180 + 10, 178, 20, new TranslatableText("button.save"), button -> 
+		addButton(new ButtonWidget(width / 2 - 89, 180 + 10, 178, 20, new TranslatableText("button.save"), button -> 
 		{
 			configureSpawner();
 			this.close();
@@ -323,7 +321,7 @@ public class SpawnerConfigGui extends Screen {
 		/**
 		 * 	Cancel button
 		 */
-		addDrawableChild(new ButtonWidget(width / 2 - 89, 180 + 35, 178, 20, new TranslatableText("button.cancel"), button -> 
+		addButton(new ButtonWidget(width / 2 - 89, 180 + 35, 178, 20, new TranslatableText("button.cancel"), button -> 
 		{
 			this.close();
 		}));
@@ -337,13 +335,12 @@ public class SpawnerConfigGui extends Screen {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		
-		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		// Draw black transparent background (just like when pressing escape)
 		renderBackground(matrices);
 		
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, spawnerConfigTexture);
+		client.getTextureManager().bindTexture(spawnerConfigTexture);
 		drawTexture(matrices, width / 2 - imageWidth / 2, 5, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 		
 		// Render spawner title text
@@ -352,8 +349,7 @@ public class SpawnerConfigGui extends Screen {
 		
 		// Render spawns icon and text (only if enabled in config)
 		if(limitedSpawns) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, spawnsIconTexture);
+			client.getTextureManager().bindTexture(spawnsIconTexture);
 			drawTexture(matrices, width / 2 - 7 + 101, 23, 0, 0, 14, 14, 14, 14);
 			drawTextWithShadow(matrices, client.textRenderer, new LiteralText("" + (ConfigValues.get("limited_spawns_amount") - spawns)), width / 2 + 114, 27, 0xFFFFFF);
 		}
@@ -365,7 +361,7 @@ public class SpawnerConfigGui extends Screen {
 	 * 	Close GUI
 	 */
 	private void close() {
-		client.setScreen((Screen)null);
+		client.openScreen((Screen)null);
 	}
 	
 	/**

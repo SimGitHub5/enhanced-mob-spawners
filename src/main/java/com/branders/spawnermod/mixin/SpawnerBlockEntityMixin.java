@@ -6,8 +6,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 /**
  * 	This mixin fixes the bug where the egg inside the spawner would go back to previous entity if the 
@@ -26,10 +26,10 @@ import net.minecraft.nbt.NbtList;
 @Mixin(MobSpawnerBlockEntity.class)
 public class SpawnerBlockEntityMixin {
 
-	@Inject(at = @At(value = "TAIL"), method = "toInitialChunkDataNbt()Lnet/minecraft/nbt/NbtCompound;")
-	private NbtCompound toInitialChunkDataNbt(CallbackInfoReturnable<NbtCompound> info) {
-		NbtCompound nbt = ((MobSpawnerBlockEntity)(Object)this).writeNbt(new NbtCompound());
-		NbtList list = nbt.getList("SpawnPotentials", 10);
+	@Inject(at = @At(value = "TAIL"), method = "toInitialChunkDataTag()Lnet/minecraft/nbt/CompoundTag;")
+	private CompoundTag toInitialChunkDataTag(CallbackInfoReturnable<CompoundTag> info) {
+		CompoundTag nbt = ((MobSpawnerBlockEntity)(Object)this).toTag(new CompoundTag());
+		ListTag list = nbt.getList("SpawnPotentials", 10);
 		String e1 = list.getCompound(0).getCompound("Entity").getString("id");
 		String e2 = nbt.getCompound("SpawnData").getString("id");
 		
