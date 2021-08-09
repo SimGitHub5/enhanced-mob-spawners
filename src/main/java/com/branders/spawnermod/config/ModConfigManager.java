@@ -16,8 +16,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 /**
  * 	Simple config manager using a <modid>.json file. Init the config by calling initConfig() with
  * 	mod id as parameter.
@@ -51,12 +49,12 @@ public class ModConfigManager {
 	 * 	Initialize the mod config. Try find an existing config file. If it exists we set values from
 	 * 	file. Otherwise we create a new config file with default values.
 	 */
-	public static void initConfig(String modid) {
+	public static void initConfig(String modid, File absoluteFile) {
 		
 		// Config values will be overwritten if a config file exists.
 		ConfigValues.setDefaultConfigValues();
 		
-		file = new File(FabricLoader.getInstance().getConfigDir().toFile(), modid + ".json");
+		file = new File(absoluteFile, "/config/" + modid + ".json");
 		
 		if(!file.exists()) {
 			// No config file found. Create a new default config
@@ -95,7 +93,6 @@ public class ModConfigManager {
 				SpawnerMod.LOGGER.info("Config was broken. Saving new config which is fixed!");
 				saveConfig();
 			}
-				
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

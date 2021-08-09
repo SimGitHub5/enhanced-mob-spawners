@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.branders.spawnermod.SpawnerMod;
 
-import net.minecraft.util.registry.Registry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * 	All mod config values are stored here.
@@ -30,10 +30,11 @@ public class ConfigValues {
 		CONFIG_SPEC.put("limited_spawns_enabled", 0);
 		CONFIG_SPEC.put("limited_spawns_amount", 32);
 		CONFIG_SPEC.put("disable_egg_removal_from_spawner", 0);
+		CONFIG_SPEC.put("monster_egg_only_drop_when_killed_by_player", 0);
 		
 		// Loop through item registry and insert all spawn egg entities to hash map.
 		// Example of a key: "minecraft:pig" with default value 0.
-		Registry.ITEM.getIds().stream().forEach(i -> {
+		ForgeRegistries.ITEMS.getKeys().stream().forEach(i -> {
 			String s = i.toString();
 			if(i.toString().contains("spawn_egg")) {
 				s = s.substring(0, s.length() - 10);	// 10 is length of "_spawn_egg"
@@ -86,5 +87,20 @@ public class ConfigValues {
 			return false;
 		else
 			return true;
+	}
+	
+	/**
+	 * 	Sync the server config with client when player joins a server.
+	 * 
+	 * 	@param config 
+	 * 	@param count
+	 * 	@param speed
+	 * 	@param range
+	 */
+	public static void sync(int config, int count, int speed, int range) {
+		put("disable_spawner_config", config);
+		put("disable_count", count);
+		put("disable_speed", speed);
+		put("disable_range", range);
 	}
 }
