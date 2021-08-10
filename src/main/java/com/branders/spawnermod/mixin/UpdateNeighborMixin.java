@@ -26,5 +26,7 @@ public class UpdateNeighborMixin {
 		World world = (World)(Object)this;
 		if(world.getBlockState(neighborPos).getBlock() instanceof SpawnerBlock)
 			EventHandler.updateNeighbor(neighborPos, world);
+		else if(world.getBlockState(pos).getBlock() instanceof SpawnerBlock)
+			EventHandler.updateNeighbor(pos, world);
 	}
 }
