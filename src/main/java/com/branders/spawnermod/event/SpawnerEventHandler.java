@@ -109,7 +109,7 @@ public class SpawnerEventHandler {
     	if(ConfigValues.get("monster_egg_only_drop_when_killed_by_player") == 1 && !causedByPlayer)
     		return;
     	
-    	if(random.nextFloat() > ConfigValues.get("monster_egg_drop_chance") / 100)
+    	if(random.nextFloat() > ConfigValues.get("monster_egg_drop_chance") / 100f)
     		return;
     	
     	Entity entity = event.getEntity();
