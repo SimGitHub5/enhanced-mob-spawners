@@ -1,31 +1,25 @@
 package com.branders.spawnermod.item;
 
-import java.util.List;
-
 import com.branders.spawnermod.config.ConfigValues;
 import com.branders.spawnermod.gui.SpawnerConfigGui;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class SpawnerKeyItem extends Item
-{
-	private static final TranslationTextComponent textComponent = 
-			new TranslationTextComponent("tooltip.spawnermod.spawner_key_disabled");
+public class SpawnerKeyItem extends Item {
+	// private static final TranslationTextComponent textComponent = 
+	//		new TranslationTextComponent("tooltip.spawnermod.spawner_key_disabled");
 	
 	public SpawnerKeyItem(Properties properties) {
 		super(properties);
@@ -69,20 +63,21 @@ public class SpawnerKeyItem extends Item
 		return super.onItemUseFirst(stack, context);
 	}
 	
+	/*
 	@Override
 	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		if(ConfigValues.get("disable_spawner_config") == 1) {
+		if(ConfigValues.get("disable_spawner_config", "spawner key add text") == 1) {
 			tooltip.add(textComponent.withStyle(TextFormatting.RED));
 			super.appendHoverText(stack, worldIn, tooltip, flagIn);	
 		}
 	}
+	*/
 	
 	/**
      * 	Opens GUI for configuration of the spawner. Only on client
      */
     @OnlyIn(Dist.CLIENT)
-    private void openSpawnerGui(AbstractSpawner logic, BlockPos pos)
-    {
+    private void openSpawnerGui(AbstractSpawner logic, BlockPos pos) {
     	Minecraft mc = Minecraft.getInstance();
     	mc.setScreen(new SpawnerConfigGui(new TranslationTextComponent(""), logic, pos));
     }
