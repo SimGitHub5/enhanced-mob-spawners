@@ -25,7 +25,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -55,7 +55,6 @@ public class SpawnerMod {
     	FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientStarting);
     	
     	MinecraftForge.EVENT_BUS.register(new SpawnerEventHandler());
-    	// MinecraftForge.EVENT_BUS.register(new WorldEvents());
     	MinecraftForge.EVENT_BUS.register(this);
 	}
 	
@@ -66,7 +65,7 @@ public class SpawnerMod {
     }
     
     @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
+    public void onServerStarting(FMLServerAboutToStartEvent event) {
     	ModConfigManager.initConfig(MODID, event.getServer().getServerDirectory().getAbsoluteFile());
     }
     
